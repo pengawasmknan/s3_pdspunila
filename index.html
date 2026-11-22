@@ -6,6 +6,8 @@
   <meta name="description" content="Program Studi S3 Studi Pembangunan, Fakultas Ilmu Sosial dan Ilmu Politik, Universitas Lampung, mengkaji perubahan sosial, kebijakan publik, dan pembangunan wilayah.">
   <title>Program Studi S3 Studi Pembangunan | Universitas Lampung</title>
   <link rel="stylesheet" href="styles.css">
+  <script defer src="public/vendor/gsap/gsap.min.js"></script>
+  <script defer src="public/vendor/gsap/ScrollTrigger.min.js"></script>
   <script defer src="site.js"></script>
 </head>
 <body>
@@ -27,25 +29,28 @@
   </header>
   <main id="konten" tabindex="-1">
     <section class="hero" id="pembuka" aria-labelledby="pembuka-title" tabindex="-1">
-      <div class="hero-layout">
-        <h1 id="pembuka-title" class="display hero-title" data-hero="rise"><span>Program Studi&nbsp;S3</span> <span>Studi Pembangunan</span></h1>
-        <div class="hero-intro" data-hero="rise">
-          <p class="hero-affiliation">Fakultas Ilmu Sosial dan Ilmu Politik, Universitas Lampung</p>
-          <p>Program doktoral ini mengkaji perubahan sosial, kebijakan publik, dan pembangunan wilayah.</p>
+      <div class="hero-scene" aria-hidden="true">
+        <img class="hero-background" src="public/assets/pdsp/hero-campus.png" alt="" fetchpriority="high">
+      </div>
+      <div class="hero-content">
+        <div class="hero-copy">
+          <p class="hero-kicker" data-hero="rise">FISIP Universitas Lampung</p>
+          <h1 id="pembuka-title" class="hero-headline" data-hero="rise">Program Studi S3<br>Studi Pembangunan</h1>
+          <p class="hero-description" data-hero="rise">Mengkaji perubahan sosial, kebijakan publik, dan pembangunan wilayah melalui pendidikan doktoral.</p>
+          <div class="hero-actions" data-hero="rise">
+            <a class="button button--primary" href="#penerimaan">Lihat Informasi Penerimaan</a>
+            <a class="button hero-secondary" href="#profil_program">Kenali Program</a>
+          </div>
         </div>
-        <div class="hero-action" data-hero="rise"><a class="button button--primary" href="#penerimaan">Lihat Informasi Penerimaan</a></div>
-        <figure class="hero-photo">
-          <div class="media-frame"><img src="public/assets/pdsp/hero-architecture.png" width="1120" height="1400" alt="Pilar beton dan jendela pada selasar berdinding oker" fetchpriority="high" data-hero="media" data-reveal="media"></div>
-          <figcaption>Detail arsitektur</figcaption>
-        </figure>
+        <p class="hero-image-note">Ilustrasi suasana kampus</p>
       </div>
     </section>
     <section class="section profile" id="profil_program" aria-labelledby="profil_program-title" tabindex="-1">
       <div class="wrap profile-layout">
         <h2 id="profil_program-title">Profil program</h2>
-        <dl class="profile-topics"><div data-reveal="rise"><dt>Perubahan sosial</dt><dd>Telaah bagaimana perubahan ekonomi dan kelembagaan memengaruhi kehidupan masyarakat.</dd></div>
-          <div data-reveal="rise"><dt>Kebijakan publik</dt><dd>Pelajari bagaimana keputusan pemerintah dirumuskan, dijalankan, dan dirasakan warga.</dd></div>
-          <div data-reveal="rise"><dt>Pembangunan wilayah</dt><dd>Kaji perbedaan akses terhadap layanan, pekerjaan, dan infrastruktur antarwilayah.</dd></div></dl>
+        <dl class="profile-topics"><div data-reveal="rise"><dt>Manajemen Pembangunan Regional</dt><dd>Konsentrasi studi pembangunan regional.</dd></div>
+          <div data-reveal="rise"><dt>Manajemen Pembangunan Sosial</dt><dd>Konsentrasi studi pembangunan sosial.</dd></div>
+          <div data-reveal="rise"><dt>Pembangunan Masyarakat Multikultural</dt><dd>Konsentrasi studi masyarakat multikultural.</dd></div></dl>
         <a class="text-link" href="#riset">Lihat Contoh Topik Riset</a>
       </div>
     </section>
@@ -75,7 +80,7 @@
           </div>
           <figcaption>Ilustrasi kegiatan studi doktoral</figcaption>
         </figure>
-        <ol class="academic-steps" role="list">
+        <ol class="academic-steps" role="list" data-reveal="slide">
           <li><span aria-hidden="true">01</span><div><h3>Rumuskan pertanyaan</h3><p>Tentukan masalah dan telusuri literatur untuk menemukan pertanyaan yang dapat diteliti.</p></div></li>
           <li><span aria-hidden="true">02</span><div><h3>Rancang dan jalankan penelitian</h3><p>Pilih metode yang sesuai, pertimbangkan etika penelitian, lalu kumpulkan dan analisis bukti.</p></div></li>
           <li><span aria-hidden="true">03</span><div><h3>Susun disertasi</h3><p>Jelaskan temuan, hubungkan dengan literatur, dan perjelas kontribusi penelitian Anda.</p></div></li>
@@ -119,6 +124,8 @@
       <div class="action-panel">
         <h2 id="kontak-title" class="heading-large">Kontak untuk studi dan penerimaan</h2>
         <p>Untuk kurikulum atau kepakaran dosen, tujukan pertanyaan kepada pengelola Program Studi S3 Studi Pembangunan. <a class="text-link" href="https://pdsp.fisip.unila.ac.id/kontak/">Kontak Program Studi</a></p>
+        <p>Email program: <a class="text-link" href="mailto:studi.pembangunan@fisip.unila.ac.id">studi.pembangunan@fisip.unila.ac.id</a></p>
+        <p>Gedung F Pascasarjana Fakultas Ilmu Sosial dan Ilmu Politik Universitas Lampung, Jl. Prof. Dr. Sumantri Brojonegoro No. 1, Bandar Lampung 35145.</p>
         <p>Untuk jadwal, dokumen, atau prosedur pendaftaran, gunakan kanal penerimaan Universitas Lampung.</p>
         <a class="button button--secondary" href="#penerimaan">Lihat Informasi Penerimaan</a>
       </div>

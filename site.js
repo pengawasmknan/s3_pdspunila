@@ -65,90 +65,47 @@ addEventListener('resize', scheduleLocationUpdate);
 markCurrentLocation();
 
 function installReferenceReveals(root = document) {
-  const elements = [...root.querySelectorAll('[data-reveal]')];
-  let active = true;
-  const animations = new Map();
-
-  function play(element, type, duration, delay, fromOpacity) {
-    const transform = type === 'media' ? 'translateX(16px)' : 'translateY(12px)';
-    const animation = element.animate(
-      [{ opacity: fromOpacity, transform }, { opacity: 1, transform: 'none' }],
-      { duration, delay, easing: ease, fill: 'backwards' }
-    );
-    animations.set(element, animation);
-    animation.onfinish = () => animations.delete(element);
-  }
-
-  const observer = typeof IntersectionObserver === 'function'
-    ? new IntersectionObserver((entries) => {
-        if (!active || reduced.matches) return;
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const element = entry.target.matches('[data-reveal]')
-            ? entry.target
-            : entry.target.querySelector('[data-reveal]');
-          observer.unobserve(entry.target);
-          element.dataset.revealPlayed = 'true';
-          const rect = entry.boundingClientRect;
-          if (reduced.matches || document.hidden || rect.bottom <= 0) continue;
-          const type = element.dataset.reveal;
-          const isHero = element.hasAttribute('data-hero');
-          const aboveFold = rect.top < innerHeight;
-          const delay = type === 'rise' && !aboveFold
-            ? Math.min(240, [...element.parentElement.children].indexOf(element) * 80)
-            : 0;
-          play(element, type, type === 'media' ? 660 : 600, delay, aboveFold || isHero ? 1 : 0);
-        }
-      }, { threshold: 0, rootMargin: '0px 0px 96px 0px' })
-    : null;
-
-  function finish() {
-    active = false;
-    observer?.disconnect();
-    for (const element of elements) element.dataset.revealPlayed = 'true';
-    for (const animation of animations.values()) animation.cancel();
-    animations.clear();
-  }
-
-  function onPreferenceChange() {
-    if (reduced.matches) {
-      finish();
-    }
-  }
-
-  if (!reduced.matches && !document.hidden && Element.prototype.animate) {
-    if (!scrollY && !location.hash && performance.getEntriesByType('navigation')[0]?.type !== 'back_forward') {
-      const hero = [...root.querySelectorAll('[data-hero]')];
-      hero.forEach((element, index) => {
-        if (element.getBoundingClientRect().top >= innerHeight) return;
-        const type = element.dataset.hero;
-        element.dataset.revealPlayed = 'true';
-        play(element, type, type === 'media' ? 660 : 600, type === 'media' ? 0 : Math.min(index * 80, 160), 1);
-      });
-    }
-    for (const element of elements) {
-      if (element.dataset.revealPlayed === 'true') continue;
-      if (!observer || element.getBoundingClientRect().top < innerHeight) {
-        element.dataset.revealPlayed = 'true';
-      } else {
-        observer.observe(element);
-      }
-    }
-  }
-  reduced.addEventListener('change', onPreferenceChange);
-  return () => {
-    finish();
-    reduced.removeEventListener('change', onPreferenceChange);
+  if (!window.gsap || !window.ScrollTrigger || reduced.matches) return () => {};
+  gsap.registerPlugin(ScrollTrigger);
+  const owned = [];
+  const triggers = [];
+  const clean = () => {
+    triggers.forEach((trigger) => trigger.kill());
+    owned.forEach((animation) => animation.progress(1).kill());
+    reduced.removeEventListener('change', onPreference);
   };
+  const onPreference = () => { if (reduced.matches) clean(); };
+  reduced.addEventListener('change', onPreference);
+  if (!scrollY && !location.hash && !document.hidden) {
+    const items = [...root.querySelectorAll('[data-hero]')].filter((el) => el.getBoundingClientRect().top < innerHeight);
+    const timeline = gsap.timeline({ defaults: { duration: 0.65, ease: 'power3.out' } });
+    items.forEach((el, index) => timeline.fromTo(el, { y: 12 }, { y: 0, clearProps: 'transform' }, Math.min(index * 0.08, 0.24)));
+    owned.push(timeline);
+  }
+  root.querySelectorAll('[data-reveal]').forEach((element) => {
+    if (element.hasAttribute('data-hero') || element.getBoundingClientRect().top < innerHeight || document.hidden) return;
+    const trigger = ScrollTrigger.create({
+      trigger: element,
+      start: 'top bottom+=96',
+      once: true,
+      onEnter: () => {
+        if (reduced.matches || document.hidden || element.getBoundingClientRect().bottom <= 0) return;
+        const horizontal = element.dataset.reveal === 'media' || element.dataset.reveal === 'slide';
+        const anim = gsap.fromTo(element, horizontal ? { x: element.dataset.reveal === 'media' ? 16 : -12 } : { y: 12 },
+          { x: 0, y: 0, duration: 0.6, ease: 'power3.out', clearProps: 'transform' });
+        owned.push(anim);
+      }
+    });
+    triggers.push(trigger);
+  });
+  document.fonts?.ready.then(() => ScrollTrigger.refresh());
+  return clean;
 }
 
 let stopReveals;
 let revealFrame;
 addEventListener('pageshow', () => {
-  // Read the viewport after the browser restores its scroll position.
-  revealFrame = requestAnimationFrame(() => {
-    stopReveals = installReferenceReveals();
-  });
+  revealFrame = requestAnimationFrame(() => { stopReveals = installReferenceReveals(); });
 }, { once: true });
 addEventListener('pagehide', () => {
   cancelAnimationFrame(revealFrame);
